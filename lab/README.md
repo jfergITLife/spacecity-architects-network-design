@@ -1,0 +1,18 @@
+# Cisco CML lab files
+
+Export a versioned CML topology after each approved milestone and place it in this directory.
+
+Recommended Phase 1 filename:
+
+```text
+space-city-architects-phase1-topology-v1.yaml
+```
+
+Before committing a CML export:
+
+1. Confirm that no passwords, private keys, API tokens, or real public IP addresses are present.
+2. Keep the Phase 1 export unconfigured if it is intended to represent the topology-only baseline.
+3. Start a new version rather than overwriting evidence from a completed milestone.
+4. Record the matching export filename in the relevant phase MOP.
+
+The YAML export is not included yet because Phase 1 was documented from the topology and interface-map screenshots. Add the export after saving it from Cisco CML.
