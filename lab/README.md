@@ -14,5 +14,3 @@ Before committing a CML export:
 2. Keep the Phase 1 export unconfigured if it is intended to represent the topology-only baseline.
 3. Start a new version rather than overwriting evidence from a completed milestone.
 4. Record the matching export filename in the relevant phase MOP.
-
-The YAML export is not included yet because Phase 1 was documented from the topology and interface-map screenshots. Add the export after saving it from Cisco CML.
