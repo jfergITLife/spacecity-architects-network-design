@@ -1,6 +1,6 @@
 # Space City Architects — Enterprise Network Lab
 
-![Space City Architects Phase 1 topology](docs/images/phase-1-topology.png)
+![Space City Architects Phase 2 topology](docs/images/phase-2-topology.png)
 
 ## Project overview
 
@@ -46,8 +46,8 @@ The project is intentionally divided into phases so that the physical and logica
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 1 | Topology, node selection, Gigabit interface allocation, and cabling documentation | Complete |
-| 2 | Device initialization, hostnames, management addressing, secure local access, SSH, and configuration standards | Planned |
-| 3 | VLANs, 802.1Q trunks, LACP EtherChannel, and spanning-tree tuning | Planned |
+| 2 | Enterprise device initialization, hostnames, secure local access, SSH, and configuration standards | Complete |
+| 3 | VLANs, management addressing, 802.1Q trunks, LACP EtherChannel, and spanning-tree tuning | Planned |
 | 4 | Inter-VLAN routing, HSRP, WAN addressing, and OSPF | Planned |
 | 5 | DHCP, NAT/PAT, ACLs, and wireless services | Planned |
 | 6 | End-to-end validation, failure testing, hardening, and final documentation | Planned |
@@ -61,6 +61,15 @@ The project is intentionally divided into phases so that the physical and logica
 
 Phase 1 is a design and cabling milestone only. The nodes were not started and no Cisco IOS configuration commands were entered during this phase.
 
+## Phase 2 deliverables
+
+- [Phase 2 Method of Procedure](docs/phase-2-mop.md)
+- [Phase 2 milestone topology](docs/images/phase-2-topology.png)
+- [HQ edge administrative-access verification](docs/images/phase-2-hq-edge1-access-verification.png)
+- [HQ edge SSH and login-control verification](docs/images/phase-2-hq-edge1-ssh-verification.png)
+
+Phase 2 establishes a repeatable administrative baseline on the seven Space City Architects-managed routers and switches. The simulated `ISP` is retained as a provider-managed device and is excluded from the enterprise baseline. Management addressing and remote SSH reachability are intentionally deferred to Phase 3.
+
 ## Repository structure
 
 ```text
@@ -68,9 +77,13 @@ space-city-architects-network-lab/
 ├── README.md
 ├── docs/
 │   ├── phase-1-mop.md
+│   ├── phase-2-mop.md
 │   └── images/
 │       ├── phase-1-interface-map.png
-│       └── phase-1-topology.png
+│       ├── phase-1-topology.png
+│       ├── phase-2-hq-edge1-access-verification.png
+│       ├── phase-2-hq-edge1-ssh-verification.png
+│       └── phase-2-topology.png
 └── lab/
     └── README.md
 ```

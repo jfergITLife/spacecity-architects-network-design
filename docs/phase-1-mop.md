@@ -176,4 +176,4 @@ Because Phase 1 contains no running configuration, rollback is limited to topolo
 
 ## 10. Handoff to Phase 2
 
-Phase 1 provides the approved physical baseline. Phase 2 should initialize the network devices, apply hostnames and secure local access, establish management addressing, enable SSH, save configurations, and record verification commands. No VLAN, trunk, or routing feature should be treated as complete until its later implementation phase and validation evidence are documented.
+Phase 1 provides the approved physical baseline. Phase 2 should initialize the enterprise-managed network devices, apply hostnames and secure local access, enable SSH, save configurations, and record verification commands. Management addressing begins with the Layer 2 implementation in Phase 3. No VLAN, trunk, or routing feature should be treated as complete until its later implementation phase and validation evidence are documented.

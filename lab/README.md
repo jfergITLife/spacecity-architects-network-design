@@ -8,6 +8,14 @@ Recommended Phase 1 filename:
 space-city-architects-phase1-topology-v1.yaml
 ```
 
+Recommended Phase 2 filename:
+
+```text
+space-city-architects-phase2-baseline-v1.yaml
+```
+
+Keep the working Phase 2 export private unless its saved device configurations have been sanitized. A public milestone export must not contain credential hashes, private keys, or reusable secrets.
+
 Before committing a CML export:
 
 1. Confirm that no passwords, private keys, API tokens, or real public IP addresses are present.
