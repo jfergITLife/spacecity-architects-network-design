@@ -1,12 +1,12 @@
 # Space City Architects — Enterprise Network Lab
 
-![Space City Architects Phase 2 topology](docs/images/phase-2-topology.png)
+![Space City Architects Phase 3 topology](docs/images/phase-3-topology.png)
 
 ## Project overview
 
 This repository documents the design and staged implementation of a realistic two-site enterprise network for **Space City Architects**, a fictional architecture, engineering, and construction (AEC) firm. The lab is built in **Cisco Modeling Labs (CML) 2.10** and models a Houston headquarters, a branch office, internet/WAN connectivity, wired users, servers, guest devices, and wireless access.
 
-The project is intentionally divided into phases so that the physical and logical design, configuration, validation, and troubleshooting can be reviewed independently. Phase 1 establishes the topology and an exact port-to-port cabling record before any device configuration is applied.
+The project is intentionally divided into phases so that the physical and logical design, configuration, validation, and troubleshooting can be reviewed independently.
 
 ## Business requirements
 
@@ -20,7 +20,7 @@ The project is intentionally divided into phases so that the physical and logica
 
 - Two IOSvL2 core switches at headquarters.
 - Two dual-homed IOSvL2 access switches at headquarters.
-- Two links between the core switches reserved for a future LACP EtherChannel.
+- Two core links designed as one LACP EtherChannel.
 - Separate IOSv routers for the ISP, headquarters edge, and branch edge.
 - A branch IOSvL2 access switch with wired and wireless endpoints.
 - Native CML Wireless AP and Wireless Client nodes for wireless testing.
@@ -47,7 +47,7 @@ The project is intentionally divided into phases so that the physical and logica
 | --- | --- | --- |
 | 1 | Topology, node selection, Gigabit interface allocation, and cabling documentation | Complete |
 | 2 | Enterprise device initialization, hostnames, secure local access, SSH, and configuration standards | Complete |
-| 3 | VLANs, management addressing, 802.1Q trunks, LACP EtherChannel, and spanning-tree tuning | Planned |
+| 3 | VLANs, management addressing, 802.1Q trunks, LACP EtherChannel, and spanning-tree tuning | In progress |
 | 4 | Inter-VLAN routing, HSRP, WAN addressing, and OSPF | Planned |
 | 5 | DHCP, NAT/PAT, ACLs, and wireless services | Planned |
 | 6 | End-to-end validation, failure testing, hardening, and final documentation | Planned |
@@ -68,7 +68,18 @@ Phase 1 is a design and cabling milestone only. The nodes were not started and n
 - [HQ edge administrative-access verification](docs/images/phase-2-hq-edge1-access-verification.png)
 - [HQ edge SSH and login-control verification](docs/images/phase-2-hq-edge1-ssh-verification.png)
 
-Phase 2 establishes a repeatable administrative baseline on the seven Space City Architects-managed routers and switches. The simulated `ISP` is retained as a provider-managed device and is excluded from the enterprise baseline. Management addressing and remote SSH reachability are intentionally deferred to Phase 3.
+Phase 2 established a repeatable administrative baseline on the seven Space City Architects-managed routers and switches. The simulated `ISP` remains outside the enterprise administrative boundary.
+
+## Phase 3 checkpoint
+
+- [Phase 3 Method of Procedure](docs/phase-3-mop.md)
+- [Phase 3 topology and interface map](docs/images/phase-3-topology.png)
+- [HQ-CORE1 VLAN verification](docs/images/phase-3-hq-core1-vlans.png)
+- [HQ-CORE1 LACP checkpoint](docs/images/phase-3-hq-core1-etherchannel-pending.png)
+- [HQ-CORE1 port-channel verification](docs/images/phase-3-hq-core1-port-channel.png)
+- [HQ-CORE1 management SVI verification](docs/images/phase-3-hq-core1-management-svi.png)
+
+Phase 3 is in progress. The logical design is approved and `HQ-CORE1` has been configured and saved. The second core, access switches, branch devices, end-to-end management testing, final configuration extraction, and completion evidence remain pending.
 
 ## Repository structure
 
@@ -78,12 +89,11 @@ space-city-architects-network-lab/
 ├── docs/
 │   ├── phase-1-mop.md
 │   ├── phase-2-mop.md
+│   ├── phase-3-mop.md
 │   └── images/
-│       ├── phase-1-interface-map.png
-│       ├── phase-1-topology.png
-│       ├── phase-2-hq-edge1-access-verification.png
-│       ├── phase-2-hq-edge1-ssh-verification.png
-│       └── phase-2-topology.png
+│       ├── phase-1-*.png
+│       ├── phase-2-*.png
+│       └── phase-3-*.png
 └── lab/
     └── README.md
 ```
@@ -92,7 +102,10 @@ space-city-architects-network-lab/
 
 - Translating business requirements into a layered network design.
 - Selecting appropriate Cisco CML node types.
-- Planning redundant uplinks and a future LACP bundle.
+- Planning redundant uplinks and LACP EtherChannel.
+- Designing VLAN segmentation and summarizable site addressing.
+- Configuring static 802.1Q trunks and allowed VLAN lists.
+- Assigning deterministic Rapid PVST+ root roles.
 - Maintaining a deterministic interface map.
 - Separating implementation into controlled, reviewable phases.
 - Producing reproducible technical documentation and validation criteria.
