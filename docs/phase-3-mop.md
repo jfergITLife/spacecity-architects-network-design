@@ -18,16 +18,17 @@ Phase 3 remains separate from inter-VLAN routing, HSRP, WAN addressing, OSPF, DH
 
 ## 2. Current checkpoint
 
-Phase 3 is **in progress**. The approved logical design is complete, and `HQ-CORE1` has been configured and saved. The remaining managed devices and end-to-end validation are pending.
+Phase 3 is **in progress**. As of August 22, 2026, the headquarters Layer 2 campus implementation and management-plane validation are complete. `HQ-CORE1`, `HQ-CORE2`, `HQ-ACCESS1`, and `HQ-ACCESS2` are configured and saved, and `HQ-ADMIN1` has successfully reached all four switch management interfaces by ping and SSH. Branch implementation, the `HQ-EDGE1` baseline, final configuration extraction, test import, and completion evidence remain pending.
 
 The Phase 3 copy was imported from the Phase 2 topology export, but the device configurations were not embedded in that YAML because the running configurations had not first been extracted into the CML lab definition. The Phase 2 configurations remained recoverable in the original lab. For the Phase 3 copy, the administrative baseline is being rebuilt as each device is configured.
 
 | Device | Phase 3 status | Notes |
 | --- | --- | --- |
 | `HQ-CORE1` | Configured | VLANs, STP roles, LACP, trunks, management SVI, CDP, and startup configuration completed |
-| `HQ-CORE2` | Pending | Required to form the core EtherChannel and assume complementary STP roles |
-| `HQ-ACCESS1` | Pending | Corporate, server, wireless, and management access |
-| `HQ-ACCESS2` | Pending | Business administration, guest, wireless, and management access |
+| `HQ-CORE2` | Configured | Complementary STP roles, operational LACP EtherChannel, restricted trunks, management SVI, CDP, SSH, and startup configuration completed |
+| `HQ-ACCESS1` | Configured | Corporate, server, wireless, and management access completed; Rapid PVST+ forwarding and alternate paths verified |
+| `HQ-ACCESS2` | Configured | Business administration, guest, wireless, and management access completed; per-VLAN STP load distribution verified |
+| `HQ-ADMIN1` | Configured | `10.10.99.50/24` assigned on `eth0`; persistent Alpine network and hostname files written; ping and SSH validation passed |
 | `BR-R1` | Pending | Administrative baseline and Layer 1 preparation only; routing remains deferred |
 | `BR-ACCESS1` | Pending | Branch VLANs, router trunk, endpoint ports, and management SVI |
 | `HQ-EDGE1` | Pending | Administrative baseline only; core-facing routed links remain untouched |
@@ -106,10 +107,10 @@ The site blocks provide simple summarization and room for growth:
 | Device | Address | Status |
 | --- | --- | --- |
 | `HQ-CORE1` | `10.10.99.2/24` | Configured; SVI observed up/up |
-| `HQ-CORE2` | `10.10.99.3/24` | Pending |
-| `HQ-ACCESS1` | `10.10.99.11/24` | Pending |
-| `HQ-ACCESS2` | `10.10.99.12/24` | Pending |
-| `HQ-ADMIN1` | `10.10.99.50/24` | Pending |
+| `HQ-CORE2` | `10.10.99.3/24` | Configured; SVI observed up/up |
+| `HQ-ACCESS1` | `10.10.99.11/24` | Configured; SVI observed up/up |
+| `HQ-ACCESS2` | `10.10.99.12/24` | Configured; SVI observed up/up |
+| `HQ-ADMIN1` | `10.10.99.50/24` | Configured; all four HQ switch management addresses reachable |
 | Future branch gateway | `10.20.99.1/24` | Reserved for Phase 4 |
 | `BR-ACCESS1` | `10.20.99.11/24` | Pending |
 
@@ -130,7 +131,7 @@ No management default gateway is introduced in this checkpoint. The first HQ man
 | Native VLAN | 999 |
 | DTP | Disabled with static trunking |
 
-The two physical links are treated as one logical STP path. At the current checkpoint, the Core 1 members are suspended because LACP is not yet enabled on Core 2. This is expected and will clear after the peer is configured.
+The two physical links are treated as one logical STP path. The initial Core 1 suspended-member state cleared after matching LACP configuration was applied to Core 2. `Port-channel1` is now operational as a Layer 2 EtherChannel, and both `G0/1` and `G0/2` are bundled members.
 
 ### 6.2 HQ access trunks
 
@@ -173,7 +174,9 @@ This distributes root ownership between the cores. Phase 4 should align each VLA
 
 `BR-ACCESS1` will be the deterministic root for its local VLANs because it is the only branch switch. PortFast and BPDU Guard will be limited to endpoint-facing access ports.
 
-## 8. HQ-CORE1 implementation record
+## 8. HQ implementation record
+
+### 8.1 HQ-CORE1
 
 The following work is complete on `HQ-CORE1`:
 
@@ -194,6 +197,17 @@ The following work is complete on `HQ-CORE1`:
 
 Console `login local` is intentionally deferred until after portable configuration extraction. It will be restored in both the live startup configuration and the extracted node configuration before Phase 3 is marked complete.
 
+### 8.2 August 22 HQ checkpoint
+
+1. Configured `HQ-CORE2` with the approved administrative baseline, SSH version 2, all HQ VLANs, complementary Rapid PVST+ priorities, matching LACP active members, restricted core and access trunks, CDP, and management SVI `10.10.99.3/24`.
+2. Verified `Port-channel1` as `Po1(SU)` with `G0/1(P)` and `G0/2(P)` bundled, and confirmed same-subnet management reachability between the cores.
+3. Configured `HQ-ACCESS1` with VLANs 10, 20, 50, 99, and 999; endpoint PortFast and BPDU Guard; redundant restricted trunks; CDP; and management SVI `10.10.99.11/24`.
+4. Verified `HQ-ACCESS1 G0/0` as root/forwarding and `G0/1` as alternate/blocking for its production VLANs. Corrected its initial classic PVST+ state to Rapid PVST+ and saved the change.
+5. Configured `HQ-ACCESS2` with VLANs 30, 40, 50, 99, and 999; endpoint PortFast and BPDU Guard; redundant restricted trunks; CDP; and management SVI `10.10.99.12/24`.
+6. Verified per-VLAN STP load distribution on `HQ-ACCESS2`: VLANs 30 and 40 forward toward Core 2, while VLANs 50, 99, and 999 forward toward Core 1.
+7. Configured `HQ-ADMIN1` as `10.10.99.50/24` on Alpine Linux `eth0` with no default gateway, then validated ping and SSH to all four HQ switches.
+8. Saved the four HQ switch running configurations to startup configuration and wrote persistent hostname and interface files on `HQ-ADMIN1`.
+
 ## 9. Current verification
 
 | Check | Expected result | Current result |
@@ -201,14 +215,24 @@ Console `login local` is intentionally deferred until after portable configurati
 | VLAN database | Seven approved HQ VLANs exist | Pass |
 | STP configuration | Rapid PVST+ and documented priorities present | Pass |
 | LACP local configuration | Channel-group 1 uses LACP active | Pass |
-| LACP peer formation | Members bundle after Core 2 configuration | Pending |
+| LACP peer formation | Members bundle after Core 2 configuration | Pass; `Po1(SU)` with both members bundled as `P` |
 | Port-channel trunk | Correct allowed list and native VLAN 999 | Pass |
-| Access trunks | Correct per-switch allowed lists and native VLAN 999 | Pass on Core 1 side |
-| Management SVI | `Vlan99` uses `10.10.99.2/24` | Pass; observed up/up |
-| SSH service | SSH version 2 enabled | Pass |
-| Startup persistence | Running configuration saved | Pass |
-| End-to-end management reachability | Ping and SSH from `HQ-ADMIN1` | Pending |
-| Redundant-path STP behavior | Correct forwarding and alternate ports | Pending |
+| Access trunks | Correct per-switch allowed lists and native VLAN 999 | Pass on both core and access sides |
+| Management SVIs | All four HQ switches use their approved VLAN 99 addresses | Pass; all observed up/up |
+| SSH service | SSH version 2 enabled | Pass on all four HQ switches |
+| Startup persistence | Running configuration saved | Pass on all four HQ switches |
+| End-to-end management reachability | Ping and SSH from `HQ-ADMIN1` | Pass to `10.10.99.2`, `.3`, `.11`, and `.12` |
+| Redundant-path STP behavior | Correct forwarding and alternate ports | Pass; root roles and per-VLAN load distribution verified |
+
+### 9.1 HQ-ADMIN1 SSH compatibility note
+
+The Alpine OpenSSH client rejects the legacy SHA-1 key-exchange and RSA host-key algorithms offered by the IOSvL2 15.2 image by default. Management validation used a per-connection lab-only override:
+
+```bash
+ssh -oKexAlgorithms=+diffie-hellman-group14-sha1 -oHostKeyAlgorithms=+ssh-rsa cisco@<management-ip>
+```
+
+The override was not enabled globally. Production equipment should use supported software and modern SSH algorithms.
 
 ## 10. Evidence
 
@@ -220,9 +244,9 @@ Console `login local` is intentionally deferred until after portable configurati
 
 ![HQ-CORE1 VLAN verification](images/phase-3-hq-core1-vlans.png)
 
-### LACP awaiting the peer core
+### Initial LACP checkpoint (historical)
 
-The suspended member state is expected at this checkpoint because Core 2 has not yet been configured for LACP.
+This image records the temporary suspended-member state before Core 2 was configured. The condition has been resolved; both physical members are now bundled in operational `Port-channel1`.
 
 ![HQ-CORE1 LACP checkpoint](images/phase-3-hq-core1-etherchannel-pending.png)
 
@@ -236,16 +260,11 @@ The suspended member state is expected at this checkpoint because Core 2 has not
 
 ## 11. Remaining implementation order
 
-1. Configure `HQ-CORE2` with the complementary STP roles and matching LACP port-channel.
-2. Validate that both core members bundle and that `Port-channel1` becomes operational.
-3. Configure and validate `HQ-ACCESS1`.
-4. Configure and validate `HQ-ACCESS2`.
-5. Configure `HQ-ADMIN1` as the management workstation and validate same-subnet ping and SSH to all HQ switches.
-6. Prepare `BR-R1 G0/1` at Layer 1 only if required to bring up the branch trunk.
-7. Configure and validate `BR-ACCESS1`.
-8. Reapply the administrative baseline to `HQ-EDGE1` without configuring its routed links.
-9. Complete full VLAN, trunk, EtherChannel, STP, CDP, management, and startup-configuration validation.
-10. Capture final evidence and change this document's status to Complete.
+1. Prepare `BR-R1 G0/1` at Layer 1 only if required to bring up the branch trunk; routing and subinterfaces remain deferred.
+2. Configure and validate `BR-ACCESS1`, including branch VLANs, endpoint ports, router trunk, Rapid PVST+, management SVI, and CDP.
+3. Reapply the administrative baseline to `HQ-EDGE1` without configuring its routed links.
+4. Complete full VLAN, trunk, EtherChannel, STP, CDP, management, and startup-configuration validation.
+5. Extract and verify device configurations, restore console `login local`, test-import the final CML milestone, capture final evidence, and change this document's status to Complete.
 
 ## 12. Configuration extraction and export control
 
