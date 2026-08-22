@@ -79,7 +79,7 @@ Phase 2 established a repeatable administrative baseline on the seven Space City
 - [HQ-CORE1 port-channel verification](docs/images/phase-3-hq-core1-port-channel.png)
 - [HQ-CORE1 management SVI verification](docs/images/phase-3-hq-core1-management-svi.png)
 
-Phase 3 is in progress. The logical design is approved and `HQ-CORE1` has been configured and saved. The second core, access switches, branch devices, end-to-end management testing, final configuration extraction, and completion evidence remain pending.
+Phase 3 is in progress. The headquarters Layer 2 campus is now operational: both cores form the LACP EtherChannel, both dual-homed access switches use deterministic Rapid PVST+ paths, all four management SVIs are reachable, and `HQ-ADMIN1` has passed ping and SSH validation to every HQ switch. Branch configuration, the `HQ-EDGE1` baseline, final configuration extraction, test import, and completion evidence remain pending.
 
 ## Repository structure
 
